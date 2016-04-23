@@ -11,7 +11,7 @@ Servo stayServo;
 #define greenpin 5
 #define bluepin 6
 
-#define commonAnode false
+#define commonAnode true
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_50MS, TCS34725_GAIN_4X);
 byte gammatable[256];
 
@@ -22,8 +22,8 @@ void setup() {
  
   flickerServo.attach (8);
   flickerServo.write (35);
-   stayServo.attach(10);
-   stayServo.write (90);
+  stayServo.attach(10);
+  stayServo.write (70);
   //sortServo.attach (4);
 
   Serial.println("Color View Test!");
@@ -63,20 +63,14 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
 
+ 
  feederServo.attach(9); 
  feederServo.write (90);
  delay (5000);
  
  feederServo.detach(); //stop feeding skittles
 
- stayServo.write (90); // center to block skittle
- delay (2000);
-
- flickerServo.write (85); //move skittle to sensor
- delay (2000);
-
-  
- uint16_t clear, red, green, blue;
+  uint16_t clear, red, green, blue;
 
   tcs.setInterrupt(false);      // turn on LED
 
@@ -107,12 +101,10 @@ void loop() {
   analogWrite(redpin, gammatable[(int)r]);
   analogWrite(greenpin, gammatable[(int)g]);
   analogWrite(bluepin, gammatable[(int)b]);
+
+  delay (2000);
+  stayServo.write (140); // release skittle to sensor
+  delay (2000);
+  stayServo.write (70);// block skittle
  
- delay (3000);
-  stayServo.write (180); //send skittle right
- delay (2000);
- flickerServo.write(35); //flick skittle off sensor
- delay (2000);
- stayServo.write (0); //send skittle down shoot to left 
- delay (2000);
 }
